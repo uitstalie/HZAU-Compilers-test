@@ -1,8 +1,8 @@
-a,b,c
+a,b,c,d
 S,A,B,C,D
 S
-S->AB|bC
-A->b|@
-B->aD|@
-C->AD|b
-D->aS|c
+S->bCA
+A->aBA|@
+B->aC|c
+C->dD
+D->bD|@

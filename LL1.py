@@ -244,14 +244,14 @@ class LL1Method:
                     if i[1] != []:
                         for j in range(0, len(i[1])):
                             anslist.append(all("@" == s for s in i[1][j]))
-                            judgelist = [s for s in i[1][j]]
+                            judgelist.extend(s for s in i[1][j])
                         flag =False
                         for j in judgelist:
                             if j !="@" and self.epsilon_table.get(j,None) == None:
                                 flag = True
 
                         
-                        if all(anslist) == True:
+                        if any(anslist) == True and flag==False:
                             self.epsilon_table.update({i[0]:True})
                         elif flag==False:
                             self.epsilon_table.update({i[0]:False})
