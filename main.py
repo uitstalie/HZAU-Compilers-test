@@ -1,5 +1,5 @@
-from LL1 import LL1
-bdsj = LL1()
+from LL1 import LL1Method
+bdsj = LL1Method()
 with open("123.txt","r+") as f:
     n = f.readlines()
     for i in range(0,len(n)):

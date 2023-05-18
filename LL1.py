@@ -6,31 +6,53 @@ from stack import Stack
 
 
 class ExpressionList:
-    def __init__(self) -> None:
+    
+    def __init__(self):
         
-        self.name:str
+        self.__name:str
         
-        self.head:str
+        self.__head:str
         
-        self.expression_list:Dict[str,List[str]]
+        self.__expression_list:Dict[str,List[str]]
         
-        self.vn:List[str]
+        self.__vn:List[str]
         
-        self.vt:List[str]
+        self.__vt:List[str]
+    
+    @property
+    def name(self):
+        return self.__name
+    
+    @property
+    def head(self):
+        return self.__head
+    
+    @property
+    def expression_list(self):
+        return self.__expression_list
+    
+    @property
+    def vn(self):
+        return self.__vn
+    
+    @property
+    def vt(self):
+        return self.__vt
+    
         
-    def init(self,links:str) -> None:
-        with open("123.txt","r+") as f:
+    def init(self,links:str,name) -> None:
+        with open(links,"r+") as f:
             n = f.readlines()
             for i in range(0,len(n)):
                 n[i] = n[i].strip("\n")
         
         temp_vt = n[0]
-        self.vt.extend(temp_vt.split(","))
+        self.__vt.extend(temp_vt.split(","))
         
         temp_vn = n[1]
-        self.vt.extend(temp_vn.split(","))
+        self.__vn.extend(temp_vn.split(","))
         
-        self.head = n[2]
+        self.__head = n[2]
         
         for i in range(3,len(n)):
             s = n[i]
@@ -40,10 +62,13 @@ class ExpressionList:
             if ("|" in right):
                 right = right.split("|")
                 for i in right:
-                    self.expression_list.setdefault(left, []).append(i)
+                    self.__expression_list.setdefault(left, []).append(i)
             else:
-                self.expression_list.setdefault(left, []).append(right)
-    
+                self.__expression_list.setdefault(left, []).append(right)
+        
+        self.__name = name
+        
+        
     def __repr__(self) -> str:
         str1 = f"表达式集：{self.name}\n"
         str2 = f"句首：{self.head}\n"
@@ -51,14 +76,15 @@ class ExpressionList:
         str4 = f"终结符集：{self.vt}\n"
         str5 = f"表达式集：\n"
         str6 = ""
-        for k,v in self.expression_list:
+        for k,v in self.__expression_list:
             str6 = str6+str(k)+":"+str(v)+"\n"
         
         return str1+str2+str3+str4+str5+str6
     
     
-class LL1:
-    __slots__ =("biaodashiji",
+class LL1Method:
+    __slots__ =("expression_list",
+                "biaodashiji",
                 "vt",
                 "vn",
                 "head",
@@ -71,9 +97,7 @@ class LL1:
                 "predict_table")
     
     def __init__(self):
-        self.biaodashiji = {}
-        self.vt: List[str] = []
-        self.vn: List[str] = []
+        pass
         
     def print_imformation(self,*args, **kwargs):
         if kwargs.get("split",None)==False:
@@ -86,10 +110,7 @@ class LL1:
                 print(i)
             print("################################")
             print()
-    
-    def set_head(self,s):
-        self.head = s
-    
+        
     def list_fresh(self,data:List):
         removelist = []
         for i in data:
@@ -108,14 +129,6 @@ class LL1:
             ans = list(set(v))
             data.update({k:ans})
         return data
-    
-    def create_vt(self, s):
-        ss = s.split(',')
-        self.vt.extend(ss)
-
-    def create_vn(self, s):
-        ss = s.split(',')
-        self.vn.extend(ss)
 
     def isvt(self, i: str):
         if len(i) != 1:
@@ -133,16 +146,13 @@ class LL1:
         else:
             return False
 
-    def create_biaodashiji(self, s):
-        ss = s.split("->")
-        left = ss[0]
-        right = ss[1]
-        if ("|" in right):
-            right = right.split("|")
-            for i in right:
-                self.biaodashiji.setdefault(left, []).append(i)
-        else:
-            self.biaodashiji.setdefault(left, []).append(right)
+    def create_expression_list(self, link,name):
+        self.expression_list = ExpressionList()
+        self.expression_list.init(link,name)
+        self.vn = self.expression_list.vn
+        self.vt = self.expression_list.vt
+        self.head = self.expression_list.head
+        self.biaodashiji = self.expression_list.expression_list        
 
     def look(self):
         for key, value in self.biaodashiji.items():
