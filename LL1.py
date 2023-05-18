@@ -9,15 +9,15 @@ class ExpressionList:
     
     def __init__(self):
         
-        self.__name:str
+        self.__name:str = ""
         
-        self.__head:str
+        self.__head:str = ""
         
-        self.__expression_list:Dict[str,List[str]]
+        self.__expression_list:Dict[str,List[str]] = {}
         
-        self.__vn:List[str]
+        self.__vn:List[str] = []
         
-        self.__vt:List[str]
+        self.__vt:List[str] = []
     
     @property
     def name(self):
@@ -88,7 +88,7 @@ class LL1Method:
                 "vt",
                 "vn",
                 "head",
-                "eplision_table",
+                "epsilon_table",
                 "vt_first_table",
                 "right_first_table",
                 "first_table",
@@ -164,10 +164,10 @@ class LL1Method:
             print(i, end=",")
         print()
 
-    def create_eplision_table(self):
-        self.eplision_table = {}
+    def create_epsilon_table(self):
+        self.epsilon_table = {}
         for i in self.vn:
-            self.eplision_table.setdefault(i, None)
+            self.epsilon_table.setdefault(i, None)
            
         dict1 = copy.deepcopy(self.biaodashiji)
         data = []
@@ -175,19 +175,19 @@ class LL1Method:
             data.append([key, value])
         
         
-        self.print_imformation("init",data,self.eplision_table)
+        self.print_imformation("init",data,self.epsilon_table)
 
         removelist = []
         for i in data:
             j = i[0]
             k = i[1]
             if ('@' in k):
-                self.eplision_table.update({j: True})
+                self.epsilon_table.update({j: True})
                 removelist.append(i)
         for i in removelist:
             data.remove(i)
 
-        self.print_imformation("去除->eps",data,self.eplision_table)
+        self.print_imformation("去除->eps",data,self.epsilon_table)
 
         removelist = []
         for i in data:
@@ -195,7 +195,7 @@ class LL1Method:
             k = i[1]
             ans = all(self.isvt(x[0])for x in k)
             if ans == True:
-                self.eplision_table.update({j: False})
+                self.epsilon_table.update({j: False})
                 removelist.append([j, k])
         for i in removelist:
             data.remove(i)
@@ -211,7 +211,7 @@ class LL1Method:
             for x in removelist:
                 i[1].remove(x)
         
-        self.print_imformation("去除绝对不能推出eps和无意义的表达式",data,self.eplision_table)
+        self.print_imformation("去除绝对不能推出eps和无意义的表达式",data,self.epsilon_table)
         
         data =self.list_fresh(data)        
         original = {}
@@ -220,21 +220,21 @@ class LL1Method:
             iter_num+=1
             if iter_num > len(self.vt):
                 raise Exception("不应该出现")
-            print(self.eplision_table)
+            print(self.epsilon_table)
             print(original)
-            if self.eplision_table==original:
+            if self.epsilon_table==original:
                 break
-            elif any(x==None for x in self.eplision_table.values())==False:
+            elif any(x==None for x in self.epsilon_table.values())==False:
                 break
             else:
-                original = copy.deepcopy(self.eplision_table)
+                original = copy.deepcopy(self.epsilon_table)
                 for i in data:
                     for j in range(0, len(i[1])):
                         for k in range(0, len(i[1][j])):
-                            if self.eplision_table.get(i[1][j][k]) == True:
+                            if self.epsilon_table.get(i[1][j][k]) == True:
                                 i[1][j] = i[1][j].replace(i[1][j][k], "@")
 
-                #self.print_imformation("替换",data,self.eplision_table) 
+                #self.print_imformation("替换",data,self.epsilon_table) 
 
                 
                 data = self.list_fresh(data)
@@ -247,17 +247,17 @@ class LL1Method:
                             judgelist = [s for s in i[1][j]]
                         flag =False
                         for j in judgelist:
-                            if j !="@" and self.eplision_table.get(j,None) == None:
+                            if j !="@" and self.epsilon_table.get(j,None) == None:
                                 flag = True
 
                         
                         if all(anslist) == True:
-                            self.eplision_table.update({i[0]:True})
+                            self.epsilon_table.update({i[0]:True})
                         elif flag==False:
-                            self.eplision_table.update({i[0]:False})
+                            self.epsilon_table.update({i[0]:False})
                 
 
-        self.print_imformation("elpision res",self.eplision_table,self.biaodashiji,data,"eplision end")
+        self.print_imformation("elpision res",self.epsilon_table,self.biaodashiji,data,"epsilon end")
 
     def create_vt_first_table(self):
         dict1 = copy.deepcopy(self.biaodashiji)
@@ -334,7 +334,7 @@ class LL1Method:
                                     new.append(i)
                             self.vt_first_table.update({k:new})
                             break
-                        elif self.isvn(x)==True and self.eplision_table.get(x,None)!=None and self.eplision_table.get(x,None)==False:
+                        elif self.isvn(x)==True and self.epsilon_table.get(x,None)!=None and self.epsilon_table.get(x,None)==False:
                             self.vt_first_table.setdefault(k,[]).extend(y)
                             ans = self.vt_first_table.get(k,[])
                             new = []
@@ -343,7 +343,7 @@ class LL1Method:
                                     new.append(i)
                             self.vt_first_table.update({k:new})
                             break
-                        elif self.isvn(x)==True and self.eplision_table.get(x,None)!=None and self.eplision_table.get(x,None)==True:
+                        elif self.isvn(x)==True and self.epsilon_table.get(x,None)!=None and self.epsilon_table.get(x,None)==True:
                             self.vt_first_table.setdefault(k,[]).extend(y)
                         else:
                             raise Exception("应该不可能")
@@ -401,7 +401,7 @@ class LL1Method:
                                 new.append(i)
                         self.right_first_table.update({s:new})
                         break
-                    elif self.isvn(x)==True and self.eplision_table.get(x,None)!=None and self.eplision_table.get(x,None)==False:
+                    elif self.isvn(x)==True and self.epsilon_table.get(x,None)!=None and self.epsilon_table.get(x,None)==False:
                         self.right_first_table.setdefault(s,[]).extend(self.vt_first_table.get(x,[]))
                         ans = self.right_first_table.get(s,[])
                         new = []
@@ -410,7 +410,7 @@ class LL1Method:
                                 new.append(i)
                         self.right_first_table.update({s:new})
                         break
-                    elif self.isvn(x)==True and self.eplision_table.get(x,None)!=None and self.eplision_table.get(x,None)==True:
+                    elif self.isvn(x)==True and self.epsilon_table.get(x,None)!=None and self.epsilon_table.get(x,None)==True:
                         self.right_first_table.setdefault(s,[]).extend(self.vt_first_table.get(x,[]))
                     else:
                         raise Exception("应该不可能")
@@ -476,7 +476,7 @@ class LL1Method:
                                     temp_vt = [x for x in res if x in self.vt]
                                     
                                     if(len(temp_vt)==0):
-                                        ans = all([self.eplision_table.get(x)for x in res])
+                                        ans = all([self.epsilon_table.get(x)for x in res])
                                         
                                         if ans==True:
                                             self.follow_table.setdefault(s[pos],[]).append("$")
@@ -504,7 +504,7 @@ class LL1Method:
                     self.select_table.setdefault(j,[]).append(self.follow_table.get(j))
                 else:
                     temp_vt = [x for x in s if x in self.vt]
-                    temp_vn = all(self.eplision_table.get(x) for x in s if x in self.vn)
+                    temp_vn = all(self.epsilon_table.get(x) for x in s if x in self.vn)
                     
                     if(len(temp_vt)==0 and temp_vn==True):
                         temp_first = self.first_table.get(s,[])

@@ -1,17 +1,8 @@
 from LL1 import LL1Method
 bdsj = LL1Method()
-with open("123.txt","r+") as f:
-    n = f.readlines()
-    for i in range(0,len(n)):
-        n[i] = n[i].strip("\n")
-
-bdsj.create_vt(n[0])
-bdsj.create_vn(n[1])
-bdsj.set_head(n[2])
-for i in range(3,len(n)):
-    bdsj.create_biaodashiji(n[i])
+bdsj.create_expression_list("123.txt","1")
 bdsj.look()    
-bdsj.create_eplision_table()
+bdsj.create_epsilon_table()
 bdsj.create_vt_first_table()
 bdsj.create_right_first_table()
 bdsj.merge()
