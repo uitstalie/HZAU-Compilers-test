@@ -1,17 +1,11 @@
-from method import ExpressionList,LL1Method
-exp_list = ExpressionList()
-exp_list.init("LL1/123.txt","1")
-bdsj = LL1Method(exp_list)
+from libs.expression_list import ExpressionList
+from libs.analysis.OPG import FormalOPGMethod
+exp_list = ExpressionList.ExpressionList()
+exp_list.init("HZAU-Compilers-test\\123.txt","1")
 
-bdsj.look()    
-bdsj.create_epsilon_table()
-bdsj.create_vt_first_table()
-bdsj.create_right_first_table()
-bdsj.merge()
-bdsj.create_follow_table()
-bdsj.create_select_table()
-ans = bdsj.LL1_judge()
-print(ans)
-if ans[0]== True:
-    bdsj.create_predict_tablle()
-    print(bdsj.predict("LL1/input.txt"))
+OPG = FormalOPGMethod.FormalOPGMethod(exp_list,"i")
+print(OPG)
+OPG.create_first_vt_table()
+OPG.create_last_vt_table()
+OPG.create_OPG_table()
+OPG.predict("1.23+3.45*2+(4^3)*(3^5)")

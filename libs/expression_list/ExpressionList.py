@@ -70,7 +70,7 @@ class ExpressionList:
         str4 = f"终结符集：{self.vt}\n"
         str5 = f"表达式集：\n"
         str6 = ""
-        for k,v in self.__expression_list:
+        for k,v in self.__expression_list.items():
             str6 = str6+str(k)+":"+str(v)+"\n"
         
         return str1+str2+str3+str4+str5+str6

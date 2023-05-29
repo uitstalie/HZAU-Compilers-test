@@ -12,18 +12,14 @@ class PreProcessingMethod:
     
     
     def isvt(self, i: str):
-        if len(i) != 1:
-            raise Exception("错误参数")
-        elif (i in self.__expression_list.vt):
+        if (i in self.__expression_list.vt):
             return True
         else:
             return False
 
     def isvn(self, i: str):
-        if len(i) != 1:
-            raise Exception("错误参数")
-        elif (i in self.__expression_list.vn):
+        if (i in self.__expression_list.vn):
             return True
         else:
             return False
-        
+            

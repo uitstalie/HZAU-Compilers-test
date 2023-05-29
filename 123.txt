@@ -1,9 +1,7 @@
-i,+,*,(,)
-S,T,E,F,G
-S
-S->TE
-E->+TE|@
-T->FG
-G->*FG|@
-F->i
-F->(S)
+i,+,*,^,(,)
+E,T,F,P
+E
+E->E+T|T
+T->T*F|F
+F->P^F|P
+P->(E)|i

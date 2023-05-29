@@ -13,6 +13,11 @@ class LL1Method(PreProcessingMethod):
     
     def __init__(self,expression_list:ExpressionList):
         super().__init__(expression_list)
+        self.epsilon_table:Dict[str,List[str]] = {}
+        self.vt_first_table:Dict[str,List[str]] = {}
+        self.right_first_table:Dict[str,List[str]] = {}
+        self.first_table:Dict[str,List[str]] = {}
+        self.follow_table:Dict[str,List[str]] = {}
         pass
         
     def print_imformation(self,*args, **kwargs):
@@ -46,20 +51,10 @@ class LL1Method(PreProcessingMethod):
             data.update({k:ans})
         return data      
 
-    def look(self):
-        for key, value in self.get_expression.expression_list.items():
-            print(key, ":", value)
-        for i in self.get_expression.vn:
-            print(i, end=",")
-        print()
-        for i in self.get_expression.vt:
-            print(i, end=",")
-        print()
-
     def create_epsilon_table(self):
-        self.epsilon_table = {}
+        self.epsilon_table:Dict[str,List[str]] = {}
         for i in self.get_expression.vn:
-            self.epsilon_table.setdefault(i, None)
+            self.epsilon_table.setdefault(i, [])
            
         dict1 = copy.deepcopy(self.get_expression.expression_list)
         data = []
@@ -159,7 +154,7 @@ class LL1Method(PreProcessingMethod):
             data.append([key, value])
             
         
-        self.vt_first_table = {}
+        self.vt_first_table:Dict[str,List[str]] = {}
         for i in self.get_expression.vt:
             self.vt_first_table.setdefault(i, []).append(i)
 
@@ -249,7 +244,7 @@ class LL1Method(PreProcessingMethod):
             data.append([key, value])
             
         
-        self.right_first_table = {}
+        self.right_first_table:Dict[str,List[str]] = {}
         
         for i in data:
             j = i[0]
@@ -309,8 +304,11 @@ class LL1Method(PreProcessingMethod):
         self.right_first_table = self.dict_fresh(self.right_first_table)
         self.print_imformation("处理X->ABCD……",self.right_first_table,data) 
     
-    def merge(self):
-        self.first_table = {}
+    def create_first_table(self):
+        self.first_table:Dict[str,List[str]] = {}
+        self.create_vt_first_table()
+        self.create_right_first_table()
+        
         a = list(self.vt_first_table.keys())
         b =list(self.right_first_table.keys())
         c = list(set(a+b))
@@ -329,7 +327,7 @@ class LL1Method(PreProcessingMethod):
             data.append([key, value])
             
         
-        self.follow_table = {}
+        self.follow_table:Dict[str,List[str]] = {}
         
         for i in self.get_expression.vn:
             self.follow_table.setdefault(i,[])
@@ -384,7 +382,7 @@ class LL1Method(PreProcessingMethod):
             data.append([key, value])
             
         
-        self.select_table = {}
+        self.select_table:Dict[str,List[str]] = {}
         for i in self.get_expression.vn:
             self.select_table.setdefault(i,[])
         
@@ -393,7 +391,7 @@ class LL1Method(PreProcessingMethod):
             k = i[1]
             for s in k:
                 if s=="@":
-                    self.select_table.setdefault(j,[]).append(self.follow_table.get(j))
+                    self.select_table.setdefault(j,[]).extend(self.follow_table.get(j,[]))
                 else:
                     temp_vt = [x for x in s if x in self.get_expression.vt]
                     temp_vn = all(self.epsilon_table.get(x) for x in s if x in self.get_expression.vn)
@@ -403,9 +401,9 @@ class LL1Method(PreProcessingMethod):
                         temp_first = [x for x in temp_first if x !="@"]
                         temp_follow = self.follow_table.get(j,[])
                         temp_ans = temp_first+temp_follow
-                        self.select_table.setdefault(j,[]).append(temp_ans)
+                        self.select_table.setdefault(j,[]).extend(temp_ans)
                     else:
-                        self.select_table.setdefault(j,[]).append(self.first_table.get(s))
+                        self.select_table.setdefault(j,[]).extend(self.first_table.get(s,[]))
         
         self.print_imformation("select集",self.select_table)                
         
