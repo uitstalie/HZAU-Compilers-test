@@ -3,10 +3,9 @@ import copy
 import numpy as np
 import pandas as pd
 from libs.util.stack import Stack
-from libs.preprocessing.PreProcessing import PreProcessingMethod
 from libs.expression_list.ExpressionList import ExpressionList
 
-class FormalOPGMethod(PreProcessingMethod):
+class FormalOPGMethod():
     def __init__(self,expression_list:ExpressionList,formal_vt:str):
         super().__init__(expression_list)
         self.formal_vt = formal_vt

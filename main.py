@@ -1,11 +1,14 @@
-from libs.expression_list import ExpressionList
+from libs.analysis.LR.LRNode import LR_method
+from libs.expression_list import ExpandExpressionList
 from libs.analysis.OPG import FormalOPGMethod
-exp_list = ExpressionList.ExpressionList()
+exp_list = ExpandExpressionList.ExpandExpressionList()
 exp_list.init("HZAU-Compilers-test\\123.txt","1")
+exp_list.expand()
 
-OPG = FormalOPGMethod.FormalOPGMethod(exp_list,"i")
-print(OPG)
-OPG.create_first_vt_table()
-OPG.create_last_vt_table()
-OPG.create_OPG_table()
-OPG.predict("1.23+3.45*2+(4^3)*(3^5)")
+
+LR = LR_method(exp_list)
+
+LR.sethead()
+LR.make_node()
+LR.make_predict_table()
+LR.predict("abab")

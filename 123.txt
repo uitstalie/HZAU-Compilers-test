@@ -1,7 +1,5 @@
-i,+,*,^,(,)
-E,T,F,P
-E
-E->E+T|T
-T->T*F|F
-F->P^F|P
-P->(E)|i
+a,b
+S,B
+S
+S->BB
+B->aB|b
